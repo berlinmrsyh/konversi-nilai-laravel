@@ -1,18 +1,28 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hasil Konversi Nilai</title>
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+    <title>Hasil Konversi</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 
 <body>
-    <div class="container">
-        <h1>Hasil Konversi Nilai</h1>
-        <p>Nilai Akhir: {{ $nilaiAkhir }}</p>
-        <p>Nilai Huruf: {{ $nilaiHuruf }}</p>
+    <div class="container mt-5">
+        <h2 class="mb-4">Hasil Konversi Nilai Mahasiswa</h2>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Nilai Akhir</th>
+                    <th>Nilai Huruf</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{ $na }}</td>
+                    <td>{{ $nh }}</td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 </body>
 
