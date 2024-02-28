@@ -3,55 +3,64 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class NilaiController extends Controller
 {
     public function index()
     {
-        return view('nilai.index');
+        return view('index');
     }
 
-    public function konversi(Request $request)
+    public function convert(Request $request)
     {
-        $validatedData = $request->validate([
-            'partisipasi' => 'required|numeric|between:0,100',
-            'tugas' => 'required|numeric|between:0,100',
-            'uts' => 'required|numeric|between:0,100',
-            'uas' => 'required|numeric|between:0,100',
+        // Validasi input
+        $validator = Validator::make($request->all(), [
+            'partisipasi' => 'required|numeric',
+            'tugas' => 'required|numeric',
+            'uts' => 'required|numeric',
+            'uas' => 'required|numeric'
         ]);
 
-        $nilaiAkhir = ($validatedData['partisipasi'] * 0.1) +
-            ($validatedData['tugas'] * 0.2) +
-            ($validatedData['uts'] * 0.3) +
-            ($validatedData['uas'] * 0.4);
+        if ($validator->fails()) {
+            return redirect('/')
+                ->withErrors($validator)
+                ->withInput();
+        }
 
-        $nilaiHuruf = $this->getNilaiHuruf($nilaiAkhir);
+        // Ambil nilai dari request
+        $partisipasi = $request->input('partisipasi');
+        $tugas = $request->input('tugas');
+        $uts = $request->input('uts');
+        $uas = $request->input('uas');
 
-        return view('nilai.hasil', [
-            'nilaiAkhir' => $nilaiAkhir,
-            'nilaiHuruf' => $nilaiHuruf,
-        ]);
+        // Hitung nilai akhir
+        $na = ($partisipasi + $tugas + $uts + $uas) / 4;
+
+        // Konversi nilai huruf
+        $nh = $this->konversiNilaiHuruf($na);
+
+        // Tampilkan hasil
+        return view('hasil', ['na' => $na, 'nh' => $nh]);
     }
 
-    private function getNilaiHuruf($nilaiAkhir)
+    private function konversiNilaiHuruf($na)
     {
-        if ($nilaiAkhir >= 85) {
+        if ($na >= 85) {
             return 'A';
-        } elseif ($nilaiAkhir >= 80) {
+        } elseif ($na >= 80) {
             return 'A-';
-        } elseif ($nilaiAkhir >= 75) {
+        } elseif ($na >= 75) {
             return 'B+';
-        } elseif ($nilaiAkhir >= 70) {
+        } elseif ($na >= 70) {
             return 'B';
-        } elseif ($nilaiAkhir >= 65) {
+        } elseif ($na >= 65) {
             return 'B-';
-        } elseif ($nilaiAkhir >= 60) {
+        } elseif ($na >= 60) {
             return 'C+';
-        } elseif ($nilaiAkhir >= 55) {
+        } elseif ($na >= 55) {
             return 'C';
-        } elseif ($nilaiAkhir >= 50) {
-            return 'C-';
-        } elseif ($nilaiAkhir >= 40) {
+        } elseif ($na >= 40) {
             return 'D';
         } else {
             return 'E';
